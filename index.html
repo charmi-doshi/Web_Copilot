@@ -8,106 +8,141 @@
   <style>
     body {
       margin: 0;
-      font-family: sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
       height: 100vh;
+      background: linear-gradient(to right, #eef2f3, #8e9eab);
     }
+
     .sidebar {
-      width: 250px;
-      background-color: #f4f4f4;
-      padding: 10px;
-      border-right: 1px solid #ddd;
-      overflow-y: auto;
+      width: 260px;
+      background-color: #ffffffcc;
+      backdrop-filter: blur(8px);
+      padding: 20px;
+      border-right: 2px solid #ddd;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
     }
+
     .sidebar h2 {
-      margin: 0 0 10px;
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #333;
     }
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-    }
+
     .sidebar li {
-      padding: 8px;
+      padding: 10px;
       cursor: pointer;
+      background: #e7e7e7;
+      margin: 6px 0;
+      border-radius: 6px;
+      font-size: 15px;
+      transition: background 0.3s, transform 0.2s;
     }
+
+    .sidebar li:hover {
+      background: #d1d1d1;
+      transform: translateX(5px);
+    }
+
     .main {
       flex: 1;
       display: flex;
       flex-direction: column;
-      padding: 10px;
+      padding: 20px;
+      overflow-y: auto;
+      animation: fadeIn 1s ease-in;
     }
+
     .header {
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
-      margin-bottom: 10px;
+      gap: 10px;
+      margin-bottom: 20px;
     }
+
+    .header button {
+      background-color: #3f51b5;
+      border-radius: 6px;
+      color: white;
+      padding: 8px 18px;
+      font-weight: bold;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
     .chatbox {
-      margin-top: 10px;
       display: flex;
       align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
     }
+
     #queryInput {
       flex: 1;
-      padding: 10px;
+      padding: 12px;
       border: 1px solid #ccc;
-      border-radius: 20px;
+      border-radius: 30px;
+      font-size: 16px;
     }
-    .icon-button {
-      width: 40px;
-      height: 40px;
-      border: none;
-      background: none;
-      cursor: pointer;
-      margin-left: 8px;
-    }
+
     .icon-button img {
-      width: 28px;
-      height: 28px;
+      width: 24px;
+      height: 24px;
     }
-    .api-icons {
-      display: flex;
-      justify-content: center;
-      margin: 10px 0;
-    }
-    .api-icons img {
-      width: 180px;
-      height: auto;
-      display: block;
-    }
-    canvas {
-      margin-top: 20px;
-      max-width: 100%;
-    }
-    #storedWidgets h3 {
-      margin-top: 20px;
-    }
-    #widgetList li {
-      background: #e0e0e0;
-      margin: 5px 0;
-      padding: 5px;
+
+    .icon-button {
+      border: none;
+      background: #ffffffdd;
+      padding: 8px;
+      border-radius: 50%;
       cursor: pointer;
-      border-radius: 4px;
+      transition: background 0.3s;
+    }
+
+    .icon-button:hover {
+      background: #f0f0f0;
+    }
+
+    .json-btn {
+      background-color: #f8f9fa;
+      border: 1px solid #ccc;
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
       font-size: 14px;
     }
+
+    .api-icons img {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    canvas {
+      margin-top: 30px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+    }
+
     #jsonOutput {
-      white-space: pre-wrap;
-      font-family: monospace;
-      background-color: #f5f5f5;
-      padding: 10px;
+      background-color: #ffffffcc;
+      padding: 15px;
+      border-radius: 10px;
       border: 1px solid #ddd;
-      border-radius: 5px;
-      margin-top: 20px;
       max-height: 300px;
       overflow-y: auto;
-      display: none;
+      font-family: monospace;
+      font-size: 14px;
+      margin-top: 20px;
     }
-    .json-btn {
-      margin-left: 8px;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      cursor: pointer;
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(10px);}
+      to {opacity: 1; transform: translateY(0);}
     }
   </style>
 </head>
@@ -115,13 +150,12 @@
   <div class="sidebar">
     <h2>API Widget</h2>
     <div class="api-icons">
-      <!-- 🔁 Replace with your actual file name if different -->
       <img src="./Widgets.png" alt="Widgets Image" />
     </div>
     <div class="api-buttons" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
-        <button onclick="fetchAndPlot('gdp')" style="padding: 10px; font-size: 16px; border-radius: 5px; border: none; background-color: white; color: black; cursor: pointer;">WorldBank</button>
-        <button onclick="fetchAndPlot('co2')" style="padding: 10px; font-size: 16px; border-radius: 5px; border: none; background-color: white; color: black; cursor: pointer;">CO2</button>
-        <button onclick="fetchAndPlot('agri')" style="padding: 10px; font-size: 16px; border-radius: 5px; border: none; background-color: white; color: black; cursor: pointer;">Agri</button>
+      <button onclick="fetchAndPlot('gdp')" style="padding: 10px; font-size: 16px; border-radius: 5px; border: none; background-color: white; color: black; cursor: pointer;">WorldBank</button>
+      <button onclick="fetchAndPlot('co2')" style="padding: 10px; font-size: 16px; border-radius: 5px; border: none; background-color: white; color: black; cursor: pointer;">CO2</button>
+      <button onclick="fetchAndPlot('agri')" style="padding: 10px; font-size: 16px; border-radius: 5px; border: none; background-color: white; color: black; cursor: pointer;">Agri</button>
     </div>      
     <div id="storedWidgets">
       <h3>Saved Widgets</h3>
@@ -131,8 +165,8 @@
 
   <div class="main">
     <div class="header">
-      <button style="background-color: #1E4DD8; border-radius: 5px; color: white; padding: 5px 15px; font-weight: bold;">Web UI Copilot</button>
-      <span style="margin-left: 10px; font-size: 20px;">👨‍✈️</span>
+      <button>Web UI Copilot</button>
+      <span style="font-size: 24px;">👨‍✈️</span>
     </div>
 
     <div class="chatbox">
@@ -141,6 +175,9 @@
         <img src="https://img.icons8.com/ios-filled/50/000000/combo-chart.png" alt="Submit" />
       </button>
       <button class="json-btn" onclick="sendQuery(true)">JSON</button>
+      <button class="icon-button" onclick="saveCustomWidget()">
+        <img src="https://img.icons8.com/ios-glyphs/30/000000/plus.png" alt="Save" />
+      </button>
       <button class="icon-button" onclick="document.getElementById('queryInput').value = ''">
         <img src="https://img.icons8.com/ios-filled/50/000000/cancel.png" alt="Clear" />
       </button>
@@ -151,6 +188,16 @@
   </div>
 
   <script>
+    async function askGemini(prompt) {
+      const res = await fetch('http://localhost:3001/api/gemini', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt })
+      });
+      const data = await res.json();
+      alert("Gemini says:\n\n" + data.response);
+    }
+
     const apiUrls = {
       gdp: 'https://api.worldbank.org/v2/country/WLD/indicator/NY.GDP.MKTP.KD.ZG?format=json',
       co2: 'https://api.worldbank.org/v2/country/WLD/indicator/EN.GHG.CO2.AG.MT.CE.AR5?format=json',
@@ -205,6 +252,7 @@
                 label: `${type.toUpperCase()} Data`,
                 data: values,
                 borderWidth: 2,
+                borderColor: '#3f51b5',
                 fill: false
               }]
             },
@@ -219,10 +267,6 @@
               }
             }
           });
-
-          if (!fromWidget && prompt) {
-            saveWidget(prompt, type);
-          }
         })
         .catch(err => alert('Error fetching data: ' + err));
     }
@@ -231,10 +275,15 @@
       const prompt = document.getElementById('queryInput').value;
       const normPrompt = normalizePrompt(prompt);
 
-      if (normPrompt.includes("gdp")) fetchAndPlot('gdp', prompt, false, jsonOnly);
-      else if (normPrompt.includes("co2")) fetchAndPlot('co2', prompt, false, jsonOnly);
-      else if (normPrompt.includes("agri")) fetchAndPlot('agri', prompt, false, jsonOnly);
-      else alert("Unrecognized query. Try mentioning GDP, CO2, or Agri.");
+      if (normPrompt.includes("gdp")) {
+        fetchAndPlot('gdp', prompt, false, jsonOnly);
+      } else if (normPrompt.includes("co2")) {
+        fetchAndPlot('co2', prompt, false, jsonOnly);
+      } else if (normPrompt.includes("agri")) {
+        fetchAndPlot('agri', prompt, false, jsonOnly);
+      } else {
+        askGemini(prompt);
+      }
     }
 
     function saveWidget(prompt, type) {
@@ -248,15 +297,44 @@
       }
     }
 
+    function saveCustomWidget() {
+      const prompt = document.getElementById('queryInput').value;
+      const normPrompt = normalizePrompt(prompt);
+
+      let type = null;
+      if (normPrompt.includes("gdp")) type = 'gdp';
+      else if (normPrompt.includes("co2")) type = 'co2';
+      else if (normPrompt.includes("agri")) type = 'agri';
+      else {
+        alert("Please include a recognizable keyword like GDP, CO2, or Agri in your query.");
+        return;
+      }
+
+      const customTitle = promptUserForTitle(prompt);
+      if (!customTitle) return;
+
+      saveWidget(customTitle, type);
+    }
+
+    function promptUserForTitle(defaultTitle) {
+      const title = prompt("Enter a custom title for your widget:", defaultTitle);
+      if (title === null || title.trim() === '') return null;
+      return title.trim();
+    }
+
     function displayWidgets() {
       const widgets = JSON.parse(localStorage.getItem('copilot_widgets') || '[]');
       const widgetList = document.getElementById('widgetList');
       widgetList.innerHTML = '';
-      widgets.forEach(widget => {
+
+      widgets.slice().reverse().forEach(widget => {
         const li = document.createElement('li');
-        li.textContent = `${widget.prompt} (${widget.type})`;
-        li.onclick = () => fetchAndPlot(widget.type, widget.prompt, true);
+        li.textContent = widget.prompt;
+        li.style.opacity = 0;
+        li.style.transition = "opacity 0.5s ease-in";
         widgetList.appendChild(li);
+        setTimeout(() => li.style.opacity = 1, 50);
+        li.onclick = () => fetchAndPlot(widget.type, widget.prompt, true);
       });
     }
 
